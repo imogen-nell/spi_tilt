@@ -59,6 +59,7 @@ def xfer(data):
 	return ret
 
 def start_up():
+	print("*****start up sequence *****")
 	GPIO.output(CS_TILT, 1)
 	xfer(SW_TO_BNK0)
 	#wake up from power down 
@@ -70,12 +71,14 @@ def start_up():
 	#clear status
 	#read STATUS 
 	dummyread0 = xfer(READ_STAT)
-	dummyread1 = xfer(0x00)
+	dummyread1 = xfer([0x00])
 	status = xfer(READ_STAT)
 
 	print("status:", status)
+	print("read0:", dummyread0)
 	print("read1:", dummyread1)
 	time.sleep(0.025)
+	print("*****start up sequence complete*****")
 
 def calculate_crc(data):
     CRC = 0xFF
