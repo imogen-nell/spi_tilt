@@ -3,15 +3,16 @@ import spidev
 import RPi.GPIO as GPIO
 
 #######
-SW_RESET  = [0xB4, 0x00, 0x20, 0x98]
-WHOAMI    = [0x40, 0x00, 0x00, 0x91]
-CS_TILT   = 18 
-SPI_TILT  = 0 ##TODO wtf is this 
-READ_STAT = [0x18, 0x00, 0x00, 0xE5]
-MODE_1    = [0xB4, 0x00, 0x00, 0x1F]
-READ_CMD  = [0x34, 0x00, 0x00, 0xDF]
-WAKE_UP   = [0xB4, 0x00, 0x00, 0x1F]
-ANG_CTRL  = [0xB0, 0x00, 0x1F, 0x6F]
+SW_RESET	    = [0xB4, 0x00, 0x20, 0x98]
+WHOAMI  	    = [0x40, 0x00, 0x00, 0x91]
+CS_TILT 		=  18 
+SPI_TILT 		= 0 ##TODO wtf is this 
+READ_STAT 		= [0x18, 0x00, 0x00, 0xE5]
+MODE_1   		= [0xB4, 0x00, 0x00, 0x1F]
+READ_CMD  		= [0x34, 0x00, 0x00, 0xDF]
+WAKE_UP   		= [0xB4, 0x00, 0x00, 0x1F]
+ANG_CTRL  		= [0xB0, 0x00, 0x1F, 0x6F]
+READ_CURR_BANK  = [0x7C, 0X00, 0X00, 0XB3]
 #######
 bus = 0
 device = 0
@@ -115,9 +116,13 @@ try:
 		# data = 0x040000F7
 		# print("CrC:", hex(calculate_crc(data)))
 		print("whoami:", whoami())
-		time.sleep(0.05)
+
 		GPIO.output(CS_TILT, 1)
-		# print("read:", xfer(READ_STAT))
-		# time.sleep(0.05)
+		print("bank:", xfer(READ_CURR_BANK))
+		GPIO.output(CS_TILT, 1)
+		print("bank:", xfer(READ_CURR_BANK))
+		GPIO.output(CS_TILT, 1)
+		time.sleep(0.05)
+	
 except KeyboardInterrupt:
 	spi.close()
