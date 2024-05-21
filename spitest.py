@@ -3,11 +3,9 @@ import spidev
 import RPi.GPIO as GPIO
 
 #######
-#SW_RESET  = 0xB4002098
 SW_RESET  = [0xB4, 0x00, 0x20, 0x98]
 WHOAMI    = [0x40, 0x00, 0x00, 0x91]
-CS_TILT   = 18
-CD_TILT   = 18 #TODO fix 
+CS_TILT   = 18 
 SPI_TILT  = 0 ##TODO wtf is this 
 READ_STAT = [0x18, 0x00, 0x00, 0xE5]
 MODE_1    = [0xB4, 0x00, 0x00, 0x1F]
@@ -22,8 +20,6 @@ spi = spidev.SpiDev()
 spi.open(bus, device)
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
-#GPIO.setup(18, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-#GPIO.setup(12, GPIO,IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(18, GPIO.OUT)
 GPIO.output(18,1) 
 spi.max_speed_hz = 2000000 #2-4 MHz
@@ -41,17 +37,17 @@ def write(data):
 def read(data, nbytes):
 	msg = bytearray()
 	msg.append(data)
-	GPIO.output(CD_TILT, 0)
+	GPIO.output(CS_TILT, 0)
 	spi.write(msg)
 	print("msg:", msg)
 	ret = spi.read(nbytes)
-	GPIO.output(CD_TILT, 1)
+	GPIO.output(CS_TILT, 1)
 	return ret
 
 def read_xfer(data):
-	GPIO.output(CD_TILT, 0)
+	GPIO.output(CS_TILT, 0)
 	ret = spi.xfer(data)
-	GPIO.output(CD_TILT, 1)
+	GPIO.output(CS_TILT, 1)
 	return ret
 
 def start_up():
@@ -96,7 +92,7 @@ def crc8(BitValue, CRC):
 def whoami():
     dummy_32 = 0
     whoami_register = 0
-    GPIO.output(CD_TILT, 0)
+    GPIO.output(CS_TILT, 0)
     time.sleep(0.001)
 
     dummy_32 = read_xfer(WHOAMI)  # Ask who am I
@@ -105,7 +101,7 @@ def whoami():
     whoami_register = read_xfer( WHOAMI)  # Ask again
     time.sleep(0.01)
 
-    GPIO.output(CD_TILT, 1)
+    GPIO.output(CS_TILT, 1)
 
     return whoami_register
 
