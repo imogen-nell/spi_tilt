@@ -14,6 +14,7 @@ WAKE_UP   		= [0xB4, 0x00, 0x00, 0x1F]
 ANG_CTRL  		= [0xB0, 0x00, 0x1F, 0x6F]
 READ_CURR_BANK  = [0x7C, 0X00, 0X00, 0XB3]
 SW_TO_BNK0		= [0xFC, 0x00, 0x00, 0x73]
+READ_BANK_LSB   = [0xB3, 0X00, 0X00, 0X7C]
 
 #######
 bus = 1
@@ -51,7 +52,7 @@ def read(data, nbytes):
 def xfer(data):
 	GPIO.output(CS_TILT, 0)
 	time.sleep(0.01)
-	ret = spi.xfer(data)
+	ret = spi.xfer(CS_TILT, data) ##added first arg
 	time.sleep(0.02)
 	GPIO.output(CS_TILT, 1)
 	time.sleep(.01)
@@ -98,8 +99,6 @@ def crc8(BitValue, CRC):
     return CRC
 
 def whoami():
-    dummy_32 = 0
-    whoami_register = 0
     GPIO.output(CS_TILT, 0)
     time.sleep(0.001)
 	#discard first read
@@ -120,11 +119,9 @@ try:
 		# data = 0x040000F7
 		# print("CrC:", hex(calculate_crc(data)))
 		print("whoami:", whoami())
-		time.sleep(0.02)
 		print("bank:", xfer(READ_CURR_BANK))
-		time.sleep(0.02)
-		print("bank:", xfer(READ_CURR_BANK))
-		time.sleep(0.05)
+		print("bank:", xfer(READ_BANK_LSB))
+		time.sleep(1)
 	
 except KeyboardInterrupt:
 	spi.close()
