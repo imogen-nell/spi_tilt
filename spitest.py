@@ -20,15 +20,15 @@ spi = spidev.SpiDev()
 spi.open(bus, device)
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(18, GPIO.OUT)
-GPIO.output(18,1) 
+GPIO.setup(CS_TILT, GPIO.OUT)
+#begin with CS high
+GPIO.output(CS_TILT, 1) 
 spi.max_speed_hz = 2000000 #2-4 MHz
 spi.mode = 0
 time.sleep(0.0005)
 ##############
 
 def write(data):
-	GPIO.setmode(GPIO.BCM)
 
 	GPIO.output(CS_TILT, 0) #pin12 is BCM 18
 	spi.write(data)
@@ -97,7 +97,7 @@ def whoami():
     whoami_register = 0
     GPIO.output(CS_TILT, 0)
     time.sleep(0.001)
-
+	#discard first read
     dummy_32 = xfer(WHOAMI)  # Ask who am I
     time.sleep(0.01)
 
@@ -112,12 +112,12 @@ try:
 	start_up()
 	time.sleep(1)
 	while True:
-		data = 0x040000F7
-		print("CrC:", hex(calculate_crc(data)))
+		# data = 0x040000F7
+		# print("CrC:", hex(calculate_crc(data)))
 		print("whoami:", whoami())
 		time.sleep(0.05)
-		print("read:", xfer(READ_STAT))
-		time.sleep(0.05)
-		print("read long:", xfer([0x180000E5]))
+		GPIO.output(CS_TILT, 1)
+		# print("read:", xfer(READ_STAT))
+		# time.sleep(0.05)
 except KeyboardInterrupt:
 	spi.close()
