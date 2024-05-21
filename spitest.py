@@ -5,6 +5,7 @@ import RPi.GPIO as GPIO
 #######
 SW_RESET	    = [0xB4, 0x00, 0x20, 0x98]
 WHOAMI  	    = [0x40, 0x00, 0x00, 0x91]
+WHOAMI_LONG	    = [0x40000091]
 CS_TILT 		=  18 
 SPI_TILT 		= 0 ##TODO wtf is this 
 READ_STAT 		= [0x18, 0x00, 0x00, 0xE5]
@@ -52,7 +53,7 @@ def read(data, nbytes):
 def xfer(data):
 	GPIO.output(CS_TILT, 0)
 	time.sleep(0.01)
-	ret = spi.xfer(CS_TILT, data) ##added first arg
+	ret = spi.xfer( data)
 	time.sleep(0.02)
 	GPIO.output(CS_TILT, 1)
 	time.sleep(.01)
@@ -77,7 +78,7 @@ def start_up():
 
 	print("status:", status)
 	print("read0:", dummyread0)
-	print("read1:", dummyread1)
+	# print("read1:", dummyread1)
 	time.sleep(0.025)
 	print("*****start up sequence complete*****")
 
@@ -120,7 +121,8 @@ try:
 		# print("CrC:", hex(calculate_crc(data)))
 		print("whoami:", whoami())
 		print("bank:", xfer(READ_CURR_BANK))
-		print("bank:", xfer(READ_BANK_LSB))
+		print("bank lsb:", xfer(READ_BANK_LSB))
+		print("whoami long:", xfer(WHOAMI_LONG))
 		time.sleep(1)
 	
 except KeyboardInterrupt:
