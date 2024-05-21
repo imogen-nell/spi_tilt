@@ -29,6 +29,7 @@ time.sleep(0.0005)
 
 def write(data):
 	GPIO.setmode(GPIO.BCM)
+
 	GPIO.output(CS_TILT, 0) #pin12 is BCM 18
 	spi.write(data)
 	GPIO.output(CS_TILT, 1)
@@ -44,35 +45,36 @@ def read(data, nbytes):
 	GPIO.output(CS_TILT, 1)
 	return ret
 
-def read_xfer(data):
+def xfer(data):
 	GPIO.output(CS_TILT, 0)
 	ret = spi.xfer(data)
 	GPIO.output(CS_TILT, 1)
+	time.sleep(.01)
+
 	return ret
 
 def start_up():
 
 	#wake up from power down 
 	#SW RESET
-	spi.xfer(SW_RESET)
-	stat_reg = spi.xfer(READ_STAT)
+	xfer(SW_RESET)
+	stat_reg = xfer(READ_STAT)
 	print("stat register:", stat_reg)
 
-	# Set SPI speed and mode
-	time.sleep(.01)
-
 	#SET MEASUREMENT MODE
-	spi.xfer(MODE_1)
+	xfer(MODE_1)
+	mode = xfer(READ_CMD)
 	time.sleep(0.025)
-	print("mode:", spi.xfer([ 0x0D,0x10, 16, 14]))
+	print("mode:", mode)
 
 	#write ANG_CTRL to enable angl outputs
-	spi.xfer(ANG_CTRL)
+	xfer(ANG_CTRL)
 	time.sleep(.025)
-
 	#clear status
 	#read STATUS 
-	print("status:", spi.xfer(READ_STAT))
+	print("status:", xfer(READ_STAT))
+	time.sleep(0.025)
+
 def calculate_crc(data):
     CRC = 0xFF
     for BitIndex in range(31, 7, -1):
@@ -89,16 +91,17 @@ def crc8(BitValue, CRC):
     if Temp > 0:
         CRC ^= 0x1D
     return CRC
+
 def whoami():
     dummy_32 = 0
     whoami_register = 0
     GPIO.output(CS_TILT, 0)
     time.sleep(0.001)
 
-    dummy_32 = read_xfer(WHOAMI)  # Ask who am I
+    dummy_32 = xfer(WHOAMI)  # Ask who am I
     time.sleep(0.01)
 
-    whoami_register = read_xfer( WHOAMI)  # Ask again
+    whoami_register = xfer( WHOAMI)  # Ask again
     time.sleep(0.01)
 
     GPIO.output(CS_TILT, 1)
@@ -113,8 +116,8 @@ try:
 		print("CrC:", hex(calculate_crc(data)))
 		print("whoami:", whoami())
 		time.sleep(0.05)
-		print("read:", read_xfer(READ_STAT))
+		print("read:", xfer(READ_STAT))
 		time.sleep(0.05)
-		print("read long:", read_xfer([0x180000E5]))
+		print("read long:", xfer([0x180000E5]))
 except KeyboardInterrupt:
 	spi.close()
