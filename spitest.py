@@ -13,8 +13,10 @@ READ_CMD  		= [0x34, 0x00, 0x00, 0xDF]
 WAKE_UP   		= [0xB4, 0x00, 0x00, 0x1F]
 ANG_CTRL  		= [0xB0, 0x00, 0x1F, 0x6F]
 READ_CURR_BANK  = [0x7C, 0X00, 0X00, 0XB3]
+SW_TO_BNK0		= [0xFC, 0x00, 0x00, 0x73]
+
 #######
-bus = 0
+bus = 1
 device = 0
 # Enable SPI #
 spi = spidev.SpiDev()
@@ -48,32 +50,31 @@ def read(data, nbytes):
 
 def xfer(data):
 	GPIO.output(CS_TILT, 0)
+	time.sleep(0.01)
 	ret = spi.xfer(data)
+	time.sleep(0.02)
 	GPIO.output(CS_TILT, 1)
 	time.sleep(.01)
 
 	return ret
 
 def start_up():
-
+	GPIO.output(CS_TILT, 1)
+	xfer(SW_TO_BNK0)
 	#wake up from power down 
-	#SW RESET
 	xfer(SW_RESET)
-	stat_reg = xfer(READ_STAT)
-	print("stat register:", stat_reg)
-
 	#SET MEASUREMENT MODE
 	xfer(MODE_1)
-	mode = xfer(READ_CMD)
-	time.sleep(0.025)
-	print("mode:", mode)
-
 	#write ANG_CTRL to enable angl outputs
 	xfer(ANG_CTRL)
-	time.sleep(.025)
 	#clear status
 	#read STATUS 
-	print("status:", xfer(READ_STAT))
+	dummyread0 = xfer(READ_STAT)
+	dummyread1 = xfer(0x00)
+	status = xfer(READ_STAT)
+
+	print("status:", status)
+	print("read1:", dummyread1)
 	time.sleep(0.025)
 
 def calculate_crc(data):
@@ -116,12 +117,10 @@ try:
 		# data = 0x040000F7
 		# print("CrC:", hex(calculate_crc(data)))
 		print("whoami:", whoami())
-
-		GPIO.output(CS_TILT, 1)
+		time.sleep(0.02)
 		print("bank:", xfer(READ_CURR_BANK))
-		GPIO.output(CS_TILT, 1)
+		time.sleep(0.02)
 		print("bank:", xfer(READ_CURR_BANK))
-		GPIO.output(CS_TILT, 1)
 		time.sleep(0.05)
 	
 except KeyboardInterrupt:
