@@ -131,12 +131,13 @@ def bad_start_up():
 	print("*****start up sequence complete*****")
 
 def calculate_crc(data):
-    CRC = 0xFF
-    for BitIndex in range(31, 7, -1):
-        BitValue = (data >> BitIndex) & 0x01
-        CRC = crc8(BitValue, CRC)
-    CRC = ~CRC & 0xFF
-    return hex(CRC)
+	data = tolong(data)
+	CRC = 0xFF
+	for BitIndex in range(31, 7, -1):
+		BitValue = (data >> BitIndex) & 0x01
+		CRC = crc8(BitValue, CRC)
+	CRC = ~CRC & 0xFF
+	return hex(CRC)
 
 def crc8(BitValue, CRC):
     Temp = CRC & 0x80
