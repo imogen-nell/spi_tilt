@@ -189,8 +189,8 @@ try:
 		returnstat = frame(READ_STAT)
 		returnstat2 = frame(READ_STAT)
 		print("return stat (expect 01):", toHex(returnstat))
-		print("CRC:", hex(returnstat[3]))
-		print("expected CRC:", calculate_crc(tolong(hex(returnstat))))
+		print("CRC:", toHex(returnstat[3]))
+		print("expected CRC:", calculate_crc(tolong(toHex(returnstat))))
 
 		print("return stat (expect 01):", toHex(returnstat2))
 		write(WHOAMI)
