@@ -208,8 +208,9 @@ try:
 		if i[3]!=calculate_crc(i):
 			print("checksum error")
 		i=toHex(i)
+		print(i)
 		get_OP(i[0])
-		print("data          (expect 0xC1):", i[1:2])
+		print("data (expect 0xC1):", i[1:2])
 
 		print("\n*********************************\n")
 		write(WHOAMI)
