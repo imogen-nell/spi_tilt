@@ -143,6 +143,7 @@ def crc8(BitValue, CRC):
         CRC ^= 0x1D
     return CRC
 
+
 #read response as HEX
 def toHex(msg):
 	return [hex(num) for num in msg]
@@ -150,7 +151,8 @@ def toHex(msg):
 #convert hex list to one string 
 ##eg [0x44, 0x55, 0x66] -> 0x445566
 def tolong(hex_list):
-  return  hex(int('0x' + ''.join(hex(num)[2:].zfill(2) for num in hex_list),16))
+    lst = [int(hex_str, 16) for hex_str in hex_list]
+    return  '0x' + ''.join(hex(num)[2:].zfill(2) for num in lst)
 
 #Read the WHOAMI register, built in init request (run at start)
 def whoami():
@@ -189,10 +191,8 @@ try:
 		returnstat = frame(READ_STAT)
 		returnstat2 = frame(READ_STAT)
 		print("return stat (expect 01):", toHex(returnstat))
-		print("CRC:", toHex(returnstat[3]))
-		print("expected CRC:", calculate_crc(tolong(toHex(returnstat))))
-
-		print("return stat (expect 01):", toHex(returnstat2))
+		print("CRC:", hex(returnstat[3]))
+		print("expected CRC:", calculate_crc(tolong(returnstat)))
 		write(WHOAMI)
 		time.sleep(1)
 	
