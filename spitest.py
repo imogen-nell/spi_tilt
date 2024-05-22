@@ -81,7 +81,7 @@ def start_up():
 	status = xfer(READ_STAT)
 
 	print("status:", status)
-	print("read0:", dummyread0)
+	#print("read0:", dummyread0)
 	time.sleep(0.025)
 	print("*****start up sequence complete*****")
 
@@ -126,7 +126,8 @@ try:
 	time.sleep(1)
 	while True:
 		i = whoami()
-		print("whoami:", toHex(i))
+		print("whoami responce:", toHex(i))
+		print("reading:", WHOAMI)
 		readI = read(WHOAMI, 4)
 		if i!=readI:
 			print("whoami read:", toHex(readI))
