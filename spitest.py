@@ -191,7 +191,7 @@ def whoami():
 def get_OP(data):
 	num = getbin(data)
 	print("RW:", num[0])
-	print("ADDR:", hex( num[1:6]))
+	print("ADDR:", hex(int(num[1:6],2)))
 	print("RS:", num[6:])
 	return
 try: 	
