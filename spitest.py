@@ -184,6 +184,9 @@ try:
 		returnstat = frame(READ_STAT)
 		returnstat2 = frame(READ_STAT)
 		print("return stat (expect 01):", toHex(returnstat))
+		print("CRC:", calculate_crc(READ_STAT))
+		print("CRC:", calculate_crc(0x180000E5))
+
 		print("return stat (expect 01):", toHex(returnstat2))
 		write(WHOAMI)
 		time.sleep(1)
