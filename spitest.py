@@ -212,6 +212,7 @@ try:
 		print("data          (expect 0xC1):", i[1:2])
 
 		print("\n*********************************\n")
+		write(WHOAMI)
 		time.sleep(1)
 	
 except KeyboardInterrupt:
