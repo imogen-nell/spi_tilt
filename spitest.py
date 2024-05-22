@@ -208,7 +208,7 @@ try:
 		if hex(i[3])!=calculate_crc(i):
 			print("checksum error")
 		i=toHex(i)
-		print(i)
+		print("Who am I:")
 		get_OP(i[0])
 		print("data (expect 0xC1):", hex(tolong(i[1:3])))
 
