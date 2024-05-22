@@ -180,7 +180,8 @@ def whoami():
     GPIO.output(CS_TILT, 1)
 
     return whoami_register
-
+def getbin(num):
+	return bin(int(num, 16))[2:]
 try: 	
 	read_start_up()
 	time.sleep(1)
@@ -194,11 +195,9 @@ try:
 		# 	print("whoami read:", toHex(readI))
 
 		i=toHex(i)
-		print("\nOP                         :",i[0])
-		print("return stat (expect NOT 11):", i[1])
+		print("\nOP                         :",getbin(i[0]))
+		print("return status (expect NOT 11):", i[1])
 		print("data          (expect 0xC1):", i[2])
-		print("result CRC    (expect 0x91):", i[3])
-
 		print("\n*********************************\n")
 		returnstat = frame(READ_STAT)
 		returnstat2 = frame(READ_STAT)
