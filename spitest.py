@@ -56,7 +56,7 @@ def read(bytecount):
 def frame(request, bytecount=4):
 	GPIO.output(CS_TILT, 0)
 	spi.writebytes(request)
-	responce = spi.readbytes()
+	responce = spi.readbytes(bytecount)
 	time.sleep(0.04)
 	GPIO.output(CS_TILT, 1)
 	time.sleep(0.005)
@@ -170,9 +170,9 @@ try:
 		i = frame(WHOAMI)
 		#print("whoami responce:", toHex(i))
 		###print("reading:", WHOAMI)
-		readI = xfer(WHOAMI, 4)
-		if i!=readI:
-			print("whoami read:", toHex(readI))
+		# readI = xfer(WHOAMI, 4)
+		# if i!=readI:
+		# 	print("whoami read:", toHex(readI))
 
 		i=toHex(i)
 		print("\nOP                         :",i[0])
@@ -181,6 +181,11 @@ try:
 		print("result CRC    (expect 0x91):", i[3])
 
 		print("\n*********************************\n")
+		returnstat = frame(READ_STAT)
+		returnstat2 = frame(READ_STAT)
+		print("return stat (expect 01):", toHex(returnstat))
+		print("return stat (expect 01):", toHex(returnstat2))
+		write(WHOAMI)
 		time.sleep(1)
 	
 except KeyboardInterrupt:
