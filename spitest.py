@@ -125,8 +125,20 @@ try:
 	start_up()
 	time.sleep(1)
 	while True:
-		print("whoami:", toHex(whoami()))
-		print("read whoami:", toHex(read(WHOAMI, 4)))
+		i = whoami()
+		print("whoami:", toHex(i))
+		readI = read(WHOAMI, 4)
+		if i!=readI:
+			print("whoami read:", toHex(readI))
+
+		print("OP", i[0])
+		print("return stat", i[1])
+		print("data", i[2])
+		print("result CRC: ", i[3])
+		print("check CRC: ", calculate_crc(WHOAMI))
+		print("full crc: ", calculate_crc(0x40000091))
+
+
 		time.sleep(1)
 	
 except KeyboardInterrupt:
