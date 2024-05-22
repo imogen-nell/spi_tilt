@@ -129,10 +129,8 @@ try:
 	time.sleep(1)
 	while True:
 		i = whoami()
-		print("whoami responce:", toHex(i))
-		print("reading:", WHOAMI)
-		print("reading:", toHex(WHOAMI))
-		print("should be reading:", [0x40, 0x00, 0x00, 0x91])
+		#print("whoami responce:", toHex(i))
+		###print("reading:", WHOAMI)
 		readI = read(WHOAMI, 4)
 		if i!=readI:
 			print("whoami read:", toHex(readI))
@@ -143,14 +141,7 @@ try:
 		print("data (expect 0xC1)", i[2])
 		print("result CRC(expect 0x91): ", i[3])
 
-		print("\n")
-		time.sleep(.01)
-		i2 = toHex(read([0x40, 0x00, 0x00, 0x91], 4))
-		print("OP", i2[0])
-		print("return stat(expect NOT 11)", i2[1])
-		print("data (expect 0xC1)", i2[2])
-		print("result CRC(expect 0x91): ", i2[3])
-		print("*********************************")
+		print("\n*********************************\n")
 		time.sleep(1)
 	
 except KeyboardInterrupt:
