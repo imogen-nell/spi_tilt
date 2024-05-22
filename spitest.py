@@ -140,9 +140,9 @@ try:
 
 		i=toHex(i)
 		print("OP", i[0])
-		print("return stat(expect NOT 11)", i[1])
-		print("data (expect 0xC1)", i[2])
-		print("result CRC(expect 0x91): ", i[3])
+		print("return stat (expect NOT 11):", i[1])
+		print("data          (expect 0xC1):", i[2])
+		print("result CRC    (expect 0x91):", i[3])
 
 		print("\n*********************************\n")
 		time.sleep(1)
