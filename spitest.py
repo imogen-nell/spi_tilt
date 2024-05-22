@@ -205,12 +205,12 @@ try:
 		# readI = xfer(WHOAMI, 4)
 		# if i!=readI:
 		# 	print("whoami read:", toHex(readI))
-
+		if i[3]!=calculate_crc(i):
+			print("checksum error")
 		i=toHex(i)
 		get_OP(i[0])
 		print("data          (expect 0xC1):", i[1:2])
-		if i[3]!=calculate_crc(i):
-			print("checksum error")
+
 		print("\n*********************************\n")
 		time.sleep(1)
 	
