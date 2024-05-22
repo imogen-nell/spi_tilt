@@ -195,9 +195,9 @@ try:
 		# 	print("whoami read:", toHex(readI))
 
 		i=toHex(i)
-		print("\nOP                         :",getbin(i[0]))
-		print("return status (expect NOT 11):", i[1])
-		print("data          (expect 0xC1):", i[2])
+		print("\nOP                         :",getbin(i[0])[0:4])
+		print("return status (expect NOT 11):", getbin(i[0])[4:])
+		print("data          (expect 0xC1):", i[1:2])
 		print("\n*********************************\n")
 		returnstat = frame(READ_STAT)
 		returnstat2 = frame(READ_STAT)
