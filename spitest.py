@@ -194,26 +194,29 @@ def get_OP(data):
 	print("ADDR:", hex(int(num[1:6],2)))
 	print("RS:", num[6:])
 	return
+
+def excecute_command(command):
+	write(command)
+	i = frame(command)
+	if hex(i[3])!=calculate_crc(i):
+		print("checksum error")
+		return
+	else:
+		i = toHex(i)
+		print("\n*************************\n")
+		print("command responce:")
+		get_OP(i[0])
+		print("data:", hex(tolong(i[1:3])))
+		print("\n*************************\n")
+	return
+
+
 try: 	
 	read_start_up()
 	time.sleep(1)
 	write(WHOAMI)
 	while True:
-		i = frame(WHOAMI)
-		#print("whoami responce:", toHex(i))
-		###print("reading:", WHOAMI)
-		# readI = xfer(WHOAMI, 4)
-		# if i!=readI:
-		# 	print("whoami read:", toHex(readI))
-		if hex(i[3])!=calculate_crc(i):
-			print("checksum error")
-		i=toHex(i)
-		print("Who am I:")
-		get_OP(i[0])
-		print("data (expect 0xC1):", hex(tolong(i[1:3])))
-
-		print("\n*********************************\n")
-		write(WHOAMI)
+		excecute_command(WHOAMI)
 		time.sleep(1)
 	
 except KeyboardInterrupt:
