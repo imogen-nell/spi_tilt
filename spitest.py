@@ -93,15 +93,20 @@ def read_start_up():
 	print("status (hex):", toHex(status))
 
 	print("SW TO BNK 0 :", toHex(resp1))
-	print("CRC		   :", calculate_crc(resp1))
+	if(toHex(resp1[3])!=calculate_crc(resp1) ):
+		print("checksum error resp1")
 	print("SW RESET    :", toHex(resp2))
-	print("CRC		   :", calculate_crc(resp2))
+	if(toHex(resp2[3])!=calculate_crc(resp2) ):
+		print("checksum error resp2")
 	print("MODE 1      :", toHex(resp3))
-	print("CRC		   :", calculate_crc(resp3))
+	if(toHex(resp3[3])!=calculate_crc(resp3) ):
+		print("checksum error resp3")
 	print("ANG CTRL    :", toHex(resp4))
-	print("CRC		   :", calculate_crc(resp4))
+	if(toHex(resp4[3])!=calculate_crc(resp4) ):
+		print("checksum error resp4")
 	print("READ STAT   :", toHex(status))
-	print("CRC		   :", calculate_crc(status))
+	if(toHex(status[3])!=calculate_crc(status) ):
+		print("checksum error status")
 	time.sleep(0.025)
 	print("*****start up sequence complete*****")
 
@@ -198,8 +203,8 @@ try:
 		returnstat = frame(READ_STAT)
 		returnstat2 = frame(READ_STAT)
 		print("return stat (expect 01):", toHex(returnstat))
-		print("CRC         :", hex(returnstat[3]))
-		print("expected CRC:", calculate_crc(returnstat))
+		if(toHex(returnstat[3])!=calculate_crc(returnstat) ):
+			print("checksum error returnstat")
 		write(WHOAMI)
 		time.sleep(1)
 	
