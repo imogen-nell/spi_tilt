@@ -128,10 +128,13 @@ try:
 		i = whoami()
 		print("whoami responce:", toHex(i))
 		print("reading:", WHOAMI)
+		print("reading:", toHex(WHOAMI))
+		print("should be reading:", [0x40, 0x00, 0x00, 0x91])
 		readI = read(WHOAMI, 4)
 		if i!=readI:
 			print("whoami read:", toHex(readI))
 
+		i=toHex(i)
 		print("OP", i[0])
 		print("return stat", i[1])
 		print("data", i[2])
