@@ -49,7 +49,7 @@ def read(msg, nbytes=0):
 	GPIO.output(CS_TILT, 0)
 	spi.writebytes(msg)
 	time.sleep(0.02)
-	print("msg:", msg)
+	#print("msg:", msg)
 	GPIO.output(CS_TILT, 1)
 	time.sleep(0.01)
 	#response
@@ -80,7 +80,8 @@ def start_up():
 	dummyread0 = xfer(READ_STAT)
 	status = xfer(READ_STAT)
 
-	print("status:", status)
+	print("status (dec):", status)
+	print("status (hex):", toHex(status))
 	#print("read0:", dummyread0)
 	time.sleep(0.025)
 	print("*****start up sequence complete*****")
