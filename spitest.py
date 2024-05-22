@@ -51,6 +51,8 @@ def read(bytecount):
 	time.sleep(0.015)
 	return ret
 
+#preforms wirte and read, the read will 
+#be responce to previous request as per the protocol
 def frame(request, bytecount=4):
 	GPIO.output(CS_TILT, 0)
 	spi.writebytes(request)
