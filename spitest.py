@@ -79,11 +79,14 @@ def start_up():
 	#clear and read STATUS 
 	dummyread0 = xfer(READ_STAT)
 	dummystat = read(READ_STAT, 4)
+	nextread = read(READ_STAT, 4)
+	finalread = read(READ_STAT, 4)
 	status = xfer(READ_STAT)
 
 	print("status (dec):", status)
 	print("status (hex):", toHex(status))
 	print("read0:", toHex(dummystat))
+	print("readfinal:", toHex(finalread))
 	#print("read0:", dummyread0)
 	time.sleep(0.025)
 	print("*****start up sequence complete*****")
