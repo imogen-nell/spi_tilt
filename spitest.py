@@ -195,7 +195,7 @@ def get_OP(data):
 	print("RS:", num[6:])
 	return
 
-def excecute_command(command):
+def excecute_command(command, key):
 	write(command)
 	i = frame(command)
 	if hex(i[3])!=calculate_crc(i):
@@ -204,7 +204,7 @@ def excecute_command(command):
 	else:
 		i = toHex(i)
 		print("\n*************************\n")
-		print("command responce:")
+		print(key + " responce:")
 		get_OP(i[0])
 		print("data:", hex(tolong(i[1:3])))
 		print("\n*************************\n")
@@ -216,7 +216,9 @@ try:
 	time.sleep(1)
 	write(WHOAMI)
 	while True:
-		excecute_command(WHOAMI)
+		print("Who am i ")
+		excecute_command(WHOAMI, 'WHOAMI')
+		excecute_command(ANG_X, 'ANG_X')
 		time.sleep(1)
 	
 except KeyboardInterrupt:
