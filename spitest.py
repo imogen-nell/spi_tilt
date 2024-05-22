@@ -65,6 +65,32 @@ def xfer(data):
 	time.sleep(0.02)
 	GPIO.output(CS_TILT, 1)
 	return ret
+##start up sequence using read instead of xfer
+def read_start_up():
+	print("*****(read )start up sequence *****")
+	GPIO.output(CS_TILT, 1)
+	read(SW_TO_BNK0)
+	#wake up from power down 
+	read(SW_RESET)
+	#SET MEASUREMENT MODE
+	read(MODE_1)
+	#write ANG_CTRL to enable angl outputs
+	read(ANG_CTRL)
+	#clear and read STATUS 
+	dummyread0 = read(READ_STAT)
+	dummystat = read(READ_STAT, 4)
+	nextread = read(READ_STAT, 4)
+	finalread = read(READ_STAT, 4)
+	status = read(READ_STAT)
+
+	print("status (dec):", status)
+	print("status (hex):", toHex(status))
+	print("read0:", toHex(dummystat))
+	print("readfinal:", toHex(finalread))
+	#print("read0:", dummyread0)
+	time.sleep(0.025)
+	print("*****start up sequence complete*****")
+
 
 def start_up():
 	print("*****start up sequence *****")
@@ -131,15 +157,15 @@ try:
 	start_up()
 	time.sleep(1)
 	while True:
-		i = whoami()
+		i = read(WHOAMI, 4)
 		#print("whoami responce:", toHex(i))
 		###print("reading:", WHOAMI)
-		readI = read(WHOAMI, 4)
+		readI = xfer(WHOAMI, 4)
 		if i!=readI:
 			print("whoami read:", toHex(readI))
 
 		i=toHex(i)
-		print("OP", i[0])
+		print("OP                         :",i[0])
 		print("return stat (expect NOT 11):", i[1])
 		print("data          (expect 0xC1):", i[2])
 		print("result CRC    (expect 0x91):", i[3])
