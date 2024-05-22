@@ -160,11 +160,18 @@ def crc8(BitValue, CRC):
 def toHex(msg):
 	return [hex(num) for num in msg]
 
+def getbin(num):
+	num = bin(int(num, 16))[2:]
+	while len(num)<8:
+		num = '0'+str(num)
+		  
+	return num
+
 #convert hex list to one string 
 ##eg [0x44, 0x55, 0x66] -> 0x445566
 def tolong(hex_list):
-    lst = [int(hex_str, 16) for hex_str in hex_list]
-    return int('0x' + ''.join(hex(num)[2:].zfill(2) for num in lst),16)
+	lst = [int(hex_str, 16) for hex_str in hex_list]
+	return int('0x' + ''.join(hex(num)[2:].zfill(2) for num in lst),16)
 
 #Read the WHOAMI register, built in init request (run at start)
 def whoami():
@@ -180,8 +187,13 @@ def whoami():
     GPIO.output(CS_TILT, 1)
 
     return whoami_register
-def getbin(num):
-	return bin(int(num, 16))[2:]
+
+def get_OP(data):
+	num = getbin(data)
+	print("RW:", num[0])
+	print("ADDR:", num[1:5])
+	print("RS:", num[5:])
+	return
 try: 	
 	read_start_up()
 	time.sleep(1)
@@ -195,16 +207,11 @@ try:
 		# 	print("whoami read:", toHex(readI))
 
 		i=toHex(i)
-		print("\nOP                         :",getbin(i[0])[0:4])
-		print("return status (expect NOT 11):", getbin(i[0])[4:])
+		get_OP(i[0])
 		print("data          (expect 0xC1):", i[1:2])
+		if i[3]!=calculate_crc(i):
+			print("checksum error")
 		print("\n*********************************\n")
-		returnstat = frame(READ_STAT)
-		returnstat2 = frame(READ_STAT)
-		print("return stat (expect 01):", toHex(returnstat))
-		if(hex(returnstat[3])!=calculate_crc(returnstat) ):
-			print("checksum error returnstat")
-		write(WHOAMI)
 		time.sleep(1)
 	
 except KeyboardInterrupt:
