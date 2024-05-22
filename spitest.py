@@ -93,13 +93,13 @@ def read_start_up():
 	print("status (hex):", toHex(status))
 
 	print("SW TO BNK 0 :", toHex(resp1))
-	print("CRC		 :", calculate_crc(resp1))
+	# print("CRC		 :", calculate_crc(resp1))
 	print("SW RESET    :", toHex(resp2))
-	print("CRC		 :", calculate_crc(resp2))
+	# print("CRC		 :", calculate_crc(resp2))
 	print("MODE 1      :", toHex(resp3))
-	print("CRC		 :", calculate_crc(resp3))
+	# print("CRC		 :", calculate_crc(resp3))
 	print("ANG CTRL    :", toHex(resp4))
-	print("CRC		 :", calculate_crc(resp4))
+	# print("CRC		 :", calculate_crc(resp4))
 	print("READ STAT   :", toHex(status))
 	time.sleep(0.025)
 	print("*****start up sequence complete*****")
@@ -131,13 +131,13 @@ def bad_start_up():
 	print("*****start up sequence complete*****")
 
 def calculate_crc(data):
-	data = tolong(data)
-	CRC = 0xFF
-	for BitIndex in range(31, 7, -1):
-		BitValue = (data >> BitIndex) & 0x01
-		CRC = crc8(BitValue, CRC)
-	CRC = ~CRC & 0xFF
-	return hex(CRC)
+    data = tolong(data)
+    CRC = 0xFF
+    for BitIndex in range(31, 7, -1):
+        BitValue = (data >> BitIndex) & 0x01
+        CRC = crc8(BitValue, CRC)
+    CRC = ~CRC & 0xFF
+    return hex(CRC)
 
 def crc8(BitValue, CRC):
     Temp = CRC & 0x80
@@ -157,7 +157,7 @@ def toHex(msg):
 ##eg [0x44, 0x55, 0x66] -> 0x445566
 def tolong(hex_list):
     lst = [int(hex_str, 16) for hex_str in hex_list]
-    return int( '0x' + ''.join(hex(num)[2:].zfill(2) for num in lst),16)
+    return int('0x' + ''.join(hex(num)[2:].zfill(2) for num in lst),16)
 
 #Read the WHOAMI register, built in init request (run at start)
 def whoami():
