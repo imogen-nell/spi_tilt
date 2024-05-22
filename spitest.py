@@ -5,9 +5,7 @@ import RPi.GPIO as GPIO
 #######
 SW_RESET	    = [0xB4, 0x00, 0x20, 0x98]
 WHOAMI  	    = [0x40, 0x00, 0x00, 0x91]
-WHOAMI_LONG	    = [0x40000091]
-CS_TILT 		=  18 
-SPI_TILT 		= 0 ##TODO wtf is this 
+CS_TILT 		= 18 #pin12 is BCM 18
 READ_STAT 		= [0x18, 0x00, 0x00, 0xE5]
 MODE_1   		= [0xB4, 0x00, 0x00, 0x1F]
 READ_CMD  		= [0x34, 0x00, 0x00, 0xDF]
@@ -15,8 +13,9 @@ WAKE_UP   		= [0xB4, 0x00, 0x00, 0x1F]
 ANG_CTRL  		= [0xB0, 0x00, 0x1F, 0x6F]
 READ_CURR_BANK  = [0x7C, 0X00, 0X00, 0XB3]
 SW_TO_BNK0		= [0xFC, 0x00, 0x00, 0x73]
-READ_BANK_LSB   = [0xB3, 0X00, 0X00, 0X7C]
-
+ANG_X			= [0x24, 0x00, 0x00, 0xC7]
+ANG_Y			= [0x28, 0x00, 0x00, 0xCD]
+ANG_Z			= [0x2C, 0x00, 0x00, 0xCB]
 #######
 bus = 1
 device = 0
@@ -30,37 +29,41 @@ GPIO.setup(CS_TILT, GPIO.OUT)
 GPIO.output(CS_TILT, 1) 
 spi.max_speed_hz = 2000000 #2-4 MHz
 spi.mode = 0
-time.sleep(0.0005)
+time.sleep(0.05)
 ##############
 
+#Write bytes to the SPI device
 def write(data):
-
-	GPIO.output(CS_TILT, 0) #pin12 is BCM 18
-	spi.write(data)
+	GPIO.output(CS_TILT, 0) 
+	spi.writebytes(data)
+	time.sleep(0.02)
 	GPIO.output(CS_TILT, 1)
-	time.sleep(0.05)
+	# time.sleep(0.02)
+	return
 
-def read(data, nbytes):
-	msg = bytearray()
-	msg.append(data)
+#Read bytes from the SPI device
+def read(msg, nbytes=0):
+	if nbytes == 0:
+		nbytes = len(msg)
+	#request
 	GPIO.output(CS_TILT, 0)
-	spi.write(msg)
-    
+	spi.writebytes(msg)
 	time.sleep(0.02)
 	print("msg:", msg)
-	ret = spi.read(nbytes)
 	GPIO.output(CS_TILT, 1)
 	time.sleep(0.01)
+	#response
+	GPIO.output(CS_TILT, 0)
+	ret = spi.readbytes(nbytes)
+	time.sleep(0.02)
+	GPIO.output(CS_TILT, 1)
 	return ret
 
 def xfer(data):
 	GPIO.output(CS_TILT, 0)
-	time.sleep(0.01)
-	ret = spi.xfer( data)
+	ret = spi.xfer(data)
 	time.sleep(0.02)
 	GPIO.output(CS_TILT, 1)
-	time.sleep(.01)
-
 	return ret
 
 def start_up():
@@ -73,15 +76,12 @@ def start_up():
 	xfer(MODE_1)
 	#write ANG_CTRL to enable angl outputs
 	xfer(ANG_CTRL)
-	#clear status
-	#read STATUS 
+	#clear and read STATUS 
 	dummyread0 = xfer(READ_STAT)
-	dummyread1 = xfer([0x00])
 	status = xfer(READ_STAT)
 
 	print("status:", status)
 	print("read0:", dummyread0)
-	# print("read1:", dummyread1)
 	time.sleep(0.025)
 	print("*****start up sequence complete*****")
 
@@ -121,8 +121,7 @@ try:
 	time.sleep(1)
 	while True:
 		print("whoami:", whoami())
-		print("read register:", read(0x10))
-		print("xfer register", xfer([0x10]))
+		print("read whoami:", read(WHOAMI, 4))
 		time.sleep(1)
 	
 except KeyboardInterrupt:
