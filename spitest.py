@@ -45,9 +45,12 @@ def read(data, nbytes):
 	msg.append(data)
 	GPIO.output(CS_TILT, 0)
 	spi.write(msg)
+    
+	time.sleep(0.02)
 	print("msg:", msg)
 	ret = spi.read(nbytes)
 	GPIO.output(CS_TILT, 1)
+	time.sleep(0.01)
 	return ret
 
 def xfer(data):
@@ -117,12 +120,9 @@ try:
 	start_up()
 	time.sleep(1)
 	while True:
-		# data = 0x040000F7
-		# print("CrC:", hex(calculate_crc(data)))
 		print("whoami:", whoami())
-		print("bank:", xfer(READ_CURR_BANK))
-		print("bank lsb:", xfer(READ_BANK_LSB))
-		print("whoami long:", xfer(WHOAMI_LONG))
+		print("read register:", read(0x10))
+		print("xfer register", xfer([0x10]))
 		time.sleep(1)
 	
 except KeyboardInterrupt:
