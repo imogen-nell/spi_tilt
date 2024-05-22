@@ -139,11 +139,18 @@ try:
 
 		i=toHex(i)
 		print("OP", i[0])
-		print("return stat", i[1])
-		print("data", i[2])
-		print("result CRC: ", i[3])
-		print("full crc: ", calculate_crc(0x40000091))
+		print("return stat(expect NOT 11)", i[1])
+		print("data (expect 0xC1)", i[2])
+		print("result CRC(expect 0x91): ", i[3])
 
+		print("\n")
+		time.sleep(.01)
+		i2 = toHex(read([0x40, 0x00, 0x00, 0x91], 4))
+		print("OP", i2[0])
+		print("return stat(expect NOT 11)", i2[1])
+		print("data (expect 0xC1)", i2[2])
+		print("result CRC(expect 0x91): ", i2[3])
+		print("*********************************")
 		time.sleep(1)
 	
 except KeyboardInterrupt:
