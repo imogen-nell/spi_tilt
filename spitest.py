@@ -136,9 +136,7 @@ try:
 		print("return stat", i[1])
 		print("data", i[2])
 		print("result CRC: ", i[3])
-		print("check CRC: ", calculate_crc(WHOAMI))
 		print("full crc: ", calculate_crc(0x40000091))
-
 
 		time.sleep(1)
 	
