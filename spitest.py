@@ -102,6 +102,11 @@ def crc8(BitValue, CRC):
         CRC ^= 0x1D
     return CRC
 
+#read response as HEX
+def toHex(msg):
+	return [hex(num) for num in msg]
+
+#Read the WHOAMI register, built in init request (run at start)
 def whoami():
     GPIO.output(CS_TILT, 0)
     time.sleep(0.001)
@@ -120,8 +125,8 @@ try:
 	start_up()
 	time.sleep(1)
 	while True:
-		print("whoami:", whoami())
-		print("read whoami:", read(WHOAMI, 4))
+		print("whoami:", toHex(whoami()))
+		print("read whoami:", toHex(read(WHOAMI, 4)))
 		time.sleep(1)
 	
 except KeyboardInterrupt:
