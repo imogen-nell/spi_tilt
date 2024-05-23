@@ -185,12 +185,14 @@ def toLongDec(hex_list):
 def toLongHex(hex_list):
   str =''
   for hex_str in hex_list:
+    tempstr=''
     i=-1
     x=0
     while hex_str[i]!='x':
-      str+=(hex_str[i])
+      tempstr+=(hex_str[i])
       i-=1
       x+=1
+    str += tempstr[::-1]
   return ('0x' + str)
 #Read the WHOAMI register, built in init request (run at start)
 # return : WHOAMI register value, expect data to be 0x00C1 always 
