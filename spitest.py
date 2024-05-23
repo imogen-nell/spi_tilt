@@ -127,7 +127,7 @@ def read_start_up():
 # return : crc as hex, should match the last byte of the data else error
 def calculate_crc(data):
 	data = toHex(data)
-	data = tolong(data)
+	data = toLongDec(data)
 	CRC = 0xFF
 	for BitIndex in range(31, 7, -1):
 		BitValue = (data >> BitIndex) & 0x01
@@ -175,11 +175,23 @@ def hextodec(hex):
   return dec
 
 #convert hex list to one string 
-##eg [0x44, 0x55, 0x66] -> 0x445566
-def tolong(hex_list):
+##eg [0x44, 0x55, 0x66] -> 0x445566 --> dec(0x445566) = 4479778 etc.
+def toLongDec(hex_list):
 	lst = [int(hex_str, 16) for hex_str in hex_list]
 	return int('0x' + ''.join(hex(num)[2:].zfill(2) for num in lst),16)
 
+#convert hex list to one string 
+##eg [0x44, 0x55, 0x66] -> 0x445566
+def toLongHex(hex_list):
+  str =''
+  for hex_str in hex_list:
+    i=-1
+    x=0
+    while hex_str[i]!='x':
+      str+=(hex_str[i])
+      i-=1
+      x+=1
+  return ('0x' + str)
 #Read the WHOAMI register, built in init request (run at start)
 # return : WHOAMI register value, expect data to be 0x00C1 always 
 def whoami():
@@ -237,7 +249,7 @@ def excecute_command(command, key):
 		print("\n*************************\n")
 		print(key + " responce:")
 		get_OP(i[0])
-		print("data:", hex(tolong(i[1:3])))
+		print("data:", hex(toLongHex(i[1:3])))
 		print("\n*************************\n")
 	return
 
