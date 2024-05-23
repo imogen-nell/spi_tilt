@@ -267,19 +267,6 @@ def excecute_angle(command, key):
 		return
 	i = toHex(i)
 	angle = convertToAngle(toLongHex(i[1:3]))
-
-	# angle = 0
-	# i = 0
-	# 	write(command)
-	# 	i = frame(command)
-	# 	if hex(i[3])!=calculate_crc(i):
-	# 		print("checksum error")
-	# 		return
-	# 	else:
-	# 		angle = convertToAngle(toLongHex(i[1:3]))
-	# 		i = toHex(i)
-	# else:
-	# 	print("invalid command")
 	return angle  
 ##main
 try: 	
