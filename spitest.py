@@ -188,7 +188,7 @@ def toLongHex(hex_list):
     tempstr=''
     i=-1
     x=0
-    while str(hex_str[i])!='x':
+    while hex_str[i] !='x':
       tempstr+=(hex_str[i])
       i-=1
       x+=1
