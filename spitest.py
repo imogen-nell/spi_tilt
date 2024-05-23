@@ -34,6 +34,7 @@ time.sleep(0.05)
 ##############
 
 #Write bytes to the SPI device
+# arg : data - list of bytes to write eg ['0x00', '0x00', '0x00', '0x00']
 def write(data):
 	GPIO.output(CS_TILT, 0) 
 	spi.writebytes(data)
@@ -43,6 +44,8 @@ def write(data):
 	return
 
 #Read bytes from the SPI device
+# arg : bytecount - number of bytes to read eg 4
+# return : list of bytes read
 def read(bytecount):
 	GPIO.output(CS_TILT, 0)
 	ret = spi.readbytes(bytecount)
@@ -53,6 +56,9 @@ def read(bytecount):
 
 #preforms wirte and read, the read will 
 #be responce to previous request as per the protocol
+# arg : request - list of bytes to write eg ['0x00', '0x00', '0x00', '0x00']
+# arg : bytecount - number of bytes to read eg 4
+# return : list of bytes read
 def frame(request, bytecount=4):
 	GPIO.output(CS_TILT, 0)
 	spi.writebytes(request)
@@ -62,7 +68,11 @@ def frame(request, bytecount=4):
 	time.sleep(0.005)
 	return responce
 
-#write then Read bytes from the SPI device
+#writes then Reads bytes from the SPI device
+#writes and read in separate frames/transactions
+# arg : msg - list of bytes to write eg ['0x00', '0x00', '0x00', '0x00']
+# arg : nbytes - number of bytes to read eg 4
+# return : list of bytes read
 def xfer(msg, nbytes=0):
 	if nbytes == 0: nbytes = len(msg)
 	#request
@@ -71,7 +81,9 @@ def xfer(msg, nbytes=0):
 	ret = read(nbytes)
 	return ret
 
-##start up sequence using read instead of xfer
+##start up sequence 
+##do once at begining of the program
+#something is wrong if the checksums are not correct
 def read_start_up():
 	print("*****(read) start up sequence *****")
 	GPIO.output(CS_TILT, 1)
@@ -89,8 +101,8 @@ def read_start_up():
 	#responce to request 5 
 	status  = read(4)
 
-	print("status (dec):", status)
-	print("status (hex):", toHex(status))
+	#print("status (dec):", status)
+	print("status:", toHex(status))
 
 	print("SW TO BNK 0 :", toHex(resp1))
 	if(hex(resp1[3])!=calculate_crc(resp1) ):
@@ -110,6 +122,9 @@ def read_start_up():
 	time.sleep(0.025)
 	print("*****start up sequence complete*****")
 
+#calcuates crc for the given data
+# arg : data - list of bytes to calculate crc eg ['0x00', '0x00', '0x00', '0x00']
+# return : crc as hex, should match the last byte of the data else error
 def calculate_crc(data):
 	data = toHex(data)
 	data = tolong(data)
@@ -120,6 +135,7 @@ def calculate_crc(data):
 	CRC = ~CRC & 0xFF
 	return hex(CRC)
 
+##used i  calculate_crc
 def crc8(BitValue, CRC):
     Temp = CRC & 0x80
     if BitValue == 0x01:
@@ -129,17 +145,34 @@ def crc8(BitValue, CRC):
         CRC ^= 0x1D
     return CRC
 
-
 #read response as HEX
 def toHex(msg):
 	return [hex(num) for num in msg]
 
-def getbin(num):
-	num = bin(int(num, 16))[2:]
-	while len(num)<8:
-		num = '0'+str(num)
-		  
-	return num
+#converts hex data to angle
+# arg : output bytes of excecute_command(ANG_XYZ)
+# return : angle in degrees to 2 decimal places
+def convertToAngle(hex):
+  dec = hextodec(hex)
+  return round((dec / 2**14)*90, 2)
+
+#converts hex to decimal
+# arg : hex - hex string eg '0x00'
+# return : decimal value
+def hextodec(hex):
+  hexes = {'a': 10, 'b': 11, 'c': 12,'d': 13, 'e': 14, 'f': 15, 'A': 10, 'B': 11, 'C': 12, 'D': 13, 'E': 14, 'F': 15}
+  dec = 0
+  i=-1
+  x=0
+  while hex[i]!='x':
+    # print(hex[i], i)
+    if hex[i] in hexes:
+      dec+= 16**x * hexes[hex[i]]
+    else:
+      dec += 16**x * int(hex[i])
+    i-=1
+    x+=1
+  return dec
 
 #convert hex list to one string 
 ##eg [0x44, 0x55, 0x66] -> 0x445566
@@ -147,9 +180,8 @@ def tolong(hex_list):
 	lst = [int(hex_str, 16) for hex_str in hex_list]
 	return int('0x' + ''.join(hex(num)[2:].zfill(2) for num in lst),16)
 
-def angle_conversion(data):
-	return data/2^14*90
 #Read the WHOAMI register, built in init request (run at start)
+# return : WHOAMI register value, expect data to be 0x00C1 always 
 def whoami():
     GPIO.output(CS_TILT, 0)
     time.sleep(0.001)
@@ -164,6 +196,19 @@ def whoami():
 
     return whoami_register
 
+#converts hex to binary, used in get_OP()
+#arg : num - hex string eg '0x00'
+#return : binary string
+def getbin(num):
+	num = bin(int(num, 16))[2:]
+	while len(num)<8:
+		num = '0'+str(num)  
+	return num
+
+#separated the OP code into RW, ADDR, RS and prints them on the screen
+#used by excecute_command()
+#arg : data - 8 bit / 1 byte hex string eg '0xC1'
+#2 lsb - RW, next 5 bits - ADDR, last 1 bit - RS
 def get_OP(data):
 	num = getbin(data)
 	print("RW:", num[0])
@@ -171,12 +216,22 @@ def get_OP(data):
 	print("RS:", num[6:])
 	return
 
+#excecutes the command and prints the responce
+#arg : command - list of 4 bytes to write eg ['0x00', '0x00', '0x00', '0x00']
+#arg : key - string to print the command name eg 'WHOAMI'
 def excecute_command(command, key):
 	write(command)
 	i = frame(command)
 	if hex(i[3])!=calculate_crc(i):
 		print("checksum error")
 		return
+	elif 'ANG' in key:
+		i = toHex(i)
+		print("\n*************************\n")
+		print(key + " responce:")
+		get_OP(i[0])
+		print("angle:", convertToAngle(i[1:3]))
+		print("\n*************************\n")
 	else:
 		i = toHex(i)
 		print("\n*************************\n")
@@ -186,7 +241,7 @@ def excecute_command(command, key):
 		print("\n*************************\n")
 	return
 
-
+##main
 try: 	
 	read_start_up()
 	time.sleep(1)
