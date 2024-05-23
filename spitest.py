@@ -1,11 +1,12 @@
 import time
 import spidev
 import RPi.GPIO as GPIO
-
 #######
+
+CS_TILT 		= 18 #pin12 is BCM 18
+
 SW_RESET	    = [0xB4, 0x00, 0x20, 0x98]
 WHOAMI  	    = [0x40, 0x00, 0x00, 0x91]
-CS_TILT 		= 18 #pin12 is BCM 18
 READ_STAT 		= [0x18, 0x00, 0x00, 0xE5]
 MODE_1   		= [0xB4, 0x00, 0x00, 0x1F]
 READ_CMD  		= [0x34, 0x00, 0x00, 0xDF]
@@ -239,7 +240,7 @@ def excecute_command(command, key):
 	if hex(i[3])!=calculate_crc(i):
 		print("checksum error")
 		return
-	elif '_ANG' in key:##ignoreing for now TODO
+	elif 'ANG' in key:
 		i = toHex(i)
 		print("\n*************************\n")
 		print(key + " responce:")
@@ -266,10 +267,15 @@ def excecute_angle(command, key):
 		print("checksum error")
 		return
 	i = toHex(i)
-	print("data:", toLongHex(i[1:3]))
-	angle = convertToAngle(toLongHex(i[1:3]))
+	hexnum = toLongHex(i[1:3])
+	print("data:", hexnum)
+	angle = convertToAngle(hexnum)
 	print("angle:", angle)
-	print("signed angle:", round((twosCompMag(toLongHex(i[1:3])) / 2**14)*90, 2))
+	signedAngle = round((twosCompMag(hexnum)/ 2**14)*90, 2)
+	if signedAngle == angle:
+		print("signed angle:", signedAngle, "-->", signedAngle-180)
+	else:
+		print("signed angle:", signedAngle)
 	return angle  
 
 def twosCompMag(num):
