@@ -249,7 +249,7 @@ def excecute_command(command, key):
 		print("\n*************************\n")
 		print(key + " responce:")
 		get_OP(i[0])
-		print("data:", hex(toLongDec(i[1:3])))
+		print("data:", i[1:3], hex(toLongDec(i[1:3])))
 		print("\n*************************\n")
 	return
 
