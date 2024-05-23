@@ -276,10 +276,10 @@ try:
 	while True:
 		excecute_command(ANG_X, 'ANG_X')
 		# print("*"*20)
-		# print("x:" , excecute_angle(ANG_X, 'ANG_X'))
+		print("x:" , excecute_angle(ANG_X, 'ANG_X'))
 		#print("y:" , excecute_angle(ANG_Y, 'ANG_Y'))
 		#print("z:" , excecute_angle(ANG_Z, 'ANG_Z'))
-		# print("*"*20)
+		print("*"*20)
 		time.sleep(1)
 	
 except KeyboardInterrupt:
