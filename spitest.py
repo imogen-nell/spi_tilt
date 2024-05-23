@@ -244,7 +244,7 @@ def excecute_command(command, key):
 		print("\n*************************\n")
 		print(key + " responce:")
 		get_OP(i[0])
-		print("angle:", i[1:3], toLongHex(i[1:3]))#convertToAngle(i[1:3]))
+		print("angle:", convertToAngle(toLongHex(i[1:3])))
 		print("\n*************************\n")
 	else:
 		i = toHex(i)
@@ -262,7 +262,7 @@ try:
 	write(WHOAMI)
 	while True:
 		print("Who am i ")
-		excecute_command(WHOAMI, 'WHOAMI')
+		#excecute_command(WHOAMI, 'WHOAMI')
 		excecute_command(ANG_X, 'ANG_X')
 		excecute_command(ANG_Y, 'ANG_Y')
 		time.sleep(1)
