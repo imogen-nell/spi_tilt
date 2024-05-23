@@ -239,7 +239,7 @@ def excecute_command(command, key):
 	if hex(i[3])!=calculate_crc(i):
 		print("checksum error")
 		return
-	elif 'ANG' in key:
+	elif '_ANG' in key:##ignoreing for now TODO
 		i = toHex(i)
 		print("\n*************************\n")
 		print(key + " responce:")
