@@ -259,17 +259,17 @@ def excecute_command(command, key):
 def excecute_angle(command, key):
 	write(command)
 	i = frame(command)
-	if hex(i[3])!=calculate_crc(i):
+	if not ('ANG_' in key):
+		print("invalid command")
+		return
+	elif hex(i[3])!=calculate_crc(i):
 		print("checksum error")
 		return
-	elif 'ANG' in key:
-		i = toHex(i)
-		print("\n*************************\n")
-		angle = convertToAngle(toLongHex(i[1:3]))
-		print("\n*************************\n")
+	i = toHex(i)
+	angle = convertToAngle(toLongHex(i[1:3]))
+
 	# angle = 0
 	# i = 0
-	# if  (key == 'ANG_X' or key == 'ANG_Y' or key == 'ANG_Z'):
 	# 	write(command)
 	# 	i = frame(command)
 	# 	if hex(i[3])!=calculate_crc(i):
