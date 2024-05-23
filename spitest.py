@@ -269,7 +269,7 @@ def excecute_angle(command, key):
 	print("data:", toLongHex(i[1:3]))
 	angle = convertToAngle(toLongHex(i[1:3]))
 	print("angle:", angle)
-	print("signed angle:", toLongHex(i[1:3]))#round((twosCompMag(toLongHex(i[1:3])) / 2**14)*90, 2))
+	print("signed angle:", round((twosCompMag(toLongHex(i[1:3])) / 2**14)*90, 2))
 	return angle  
 
 def twosCompMag(num):
@@ -297,9 +297,9 @@ try:
 	time.sleep(1)
 	write(WHOAMI)
 	while True:
-		excecute_command(ANG_X, 'ANG_X')
+		excecute_angle(ANG_X, 'ANG_X')
 		# print("*"*20)
-		print("x:" , excecute_angle(ANG_X, 'ANG_X'))
+		#print("angle:" , excecute_angle(ANG_X, 'ANG_X'))
 		#print("y:" , excecute_angle(ANG_Y, 'ANG_Y'))
 		#print("z:" , excecute_angle(ANG_Z, 'ANG_Z'))
 		print("*"*20)
