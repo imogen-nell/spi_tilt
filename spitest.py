@@ -275,8 +275,7 @@ try:
 	write(WHOAMI)
 	while True:
 		excecute_command(ANG_X, 'ANG_X')
-		ang = excecute_angle(ANG_X, 'ANG_X')
-		print("x:" , ang)
+		print("x:" , excecute_angle(ANG_X, 'ANG_X'))
 		# print("y:" , excecute_angle(ANG_Y, 'ANG_Y'))
 		# print("z:" , excecute_angle(ANG_Z, 'ANG_Z'))
 		time.sleep(1)
