@@ -274,10 +274,9 @@ try:
 	time.sleep(1)
 	write(WHOAMI)
 	while True:
-		excecute_command(ANG_X, 'ANG_X')
 		print("x:" , excecute_angle(ANG_X, 'ANG_X'))
-		# print("y:" , excecute_angle(ANG_Y, 'ANG_Y'))
-		# print("z:" , excecute_angle(ANG_Z, 'ANG_Z'))
+		print("y:" , excecute_angle(ANG_Y, 'ANG_Y'))
+		print("z:" , excecute_angle(ANG_Z, 'ANG_Z'))
 		time.sleep(1)
 	
 except KeyboardInterrupt:
