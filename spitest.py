@@ -242,7 +242,7 @@ def excecute_command(command, key):
 		print("\n*************************\n")
 		print(key + " responce:")
 		get_OP(i[0])
-		print("angle:", i[1:3])#convertToAngle(i[1:3]))
+		print("angle:", toLongHex(i[1:3]))#convertToAngle(i[1:3]))
 		print("\n*************************\n")
 	else:
 		i = toHex(i)
