@@ -266,7 +266,7 @@ def excecute_angle(command, key):
 		print("checksum error")
 		return
 	i = toHex(i)
-	print("data:", hex(toLongHex(i[1:3])))
+	print("data:", toLongHex(i[1:3]))
 	angle = convertToAngle(toLongHex(i[1:3]))
 	print("angle:", angle)
 	print("signed angle:", toLongHex(i[1:3]))#round((twosCompMag(toLongHex(i[1:3])) / 2**14)*90, 2))
