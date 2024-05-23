@@ -110,32 +110,6 @@ def read_start_up():
 	time.sleep(0.025)
 	print("*****start up sequence complete*****")
 
-
-def bad_start_up():
-	print("*****start up sequence *****")
-	GPIO.output(CS_TILT, 1)
-	xfer(SW_TO_BNK0)
-	#wake up from power down 
-	xfer(SW_RESET)
-	#SET MEASUREMENT MODE
-	xfer(MODE_1)
-	#write ANG_CTRL to enable angl outputs
-	xfer(ANG_CTRL)
-	#clear and read STATUS 
-	dummyread0 = xfer(READ_STAT)
-	dummystat = read(READ_STAT, 4)
-	nextread = read(READ_STAT, 4)
-	finalread = read(READ_STAT, 4)
-	status = xfer(READ_STAT)
-
-	print("status (dec):", status)
-	print("status (hex):", toHex(status))
-	print("read0:", toHex(dummystat))
-	print("readfinal:", toHex(finalread))
-	#print("read0:", dummyread0)
-	time.sleep(0.025)
-	print("*****start up sequence complete*****")
-
 def calculate_crc(data):
 	data = toHex(data)
 	data = tolong(data)
@@ -173,6 +147,8 @@ def tolong(hex_list):
 	lst = [int(hex_str, 16) for hex_str in hex_list]
 	return int('0x' + ''.join(hex(num)[2:].zfill(2) for num in lst),16)
 
+def angle_conversion(data):
+	return data/2^14*90
 #Read the WHOAMI register, built in init request (run at start)
 def whoami():
     GPIO.output(CS_TILT, 0)
@@ -219,6 +195,7 @@ try:
 		print("Who am i ")
 		excecute_command(WHOAMI, 'WHOAMI')
 		excecute_command(ANG_X, 'ANG_X')
+		excecute_command(ANG_Y, 'ANG_Y')
 		time.sleep(1)
 	
 except KeyboardInterrupt:
