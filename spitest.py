@@ -254,17 +254,31 @@ def excecute_command(command, key):
 		print("data:", hex(toLongDec(i[1:3])))
 		print("\n*************************\n")
 	return
-
+#excecutes the command and returns the angle read
+#arg : read angle command. allowed commands are ANG_X, ANG_Y, ANG_Z
+def excecute_angle(command):
+	if command != ANG_X or command != ANG_Y or command != ANG_Z:
+		print("invalid command")
+		return 
+	else:
+		write(command)
+		i = frame(command)
+		if hex(i[3])!=calculate_crc(i):
+			print("checksum error")
+			return
+		else:
+			angle = convertToAngle(toLongHex(i[1:3]))
+			i = toHex(i)
+	return angle  
 ##main
 try: 	
 	read_start_up()
 	time.sleep(1)
 	write(WHOAMI)
 	while True:
-		print("Who am i ")
-		#excecute_command(WHOAMI, 'WHOAMI')
-		excecute_command(ANG_X, 'ANG_X')
-		excecute_command(ANG_Y, 'ANG_Y')
+		print("x:" , excecute_angle(ANG_X))
+		print("y:" , excecute_angle(ANG_Y))
+		print("z:" , excecute_angle(ANG_Z))
 		time.sleep(1)
 	
 except KeyboardInterrupt:
