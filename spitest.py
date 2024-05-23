@@ -269,7 +269,7 @@ def excecute_angle(command, key):
 	print("data:", hex(toLongHex(i[1:3])))
 	angle = convertToAngle(toLongHex(i[1:3]))
 	print("angle:", angle)
-	print("signed angle:", round((twosCompMag(toLongHex(i[1:3])) / 2**14)*90, 2))
+	print("signed angle:", toLongHex(i[1:3]))#round((twosCompMag(toLongHex(i[1:3])) / 2**14)*90, 2))
 	return angle  
 
 def twosCompMag(num):
