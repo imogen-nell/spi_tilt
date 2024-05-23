@@ -257,7 +257,7 @@ def excecute_command(command, key):
 #excecutes the command and returns the angle read
 #arg : read angle command. allowed commands are ANG_X, ANG_Y, ANG_Z
 def excecute_angle(command):
-	if command != ANG_X or command != ANG_Y or command != ANG_Z:
+	if not (command != ANG_X or command != ANG_Y or command != ANG_Z):
 		print("invalid command")
 		return 
 	else:
