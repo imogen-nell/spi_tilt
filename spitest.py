@@ -150,7 +150,7 @@ def toHex(msg):
 	return [hex(num) for num in msg]
 
 #converts hex data to angle
-# arg : output bytes of excecute_command(ANG_XYZ)
+# arg : output bytes of excecute_command(ANG_XYZ) (hex)
 # return : angle in degrees to 2 decimal places
 def convertToAngle(hex):
   dec = hextodec(hex)
@@ -251,7 +251,7 @@ def excecute_command(command, key):
 		print("\n*************************\n")
 		print(key + " responce:")
 		get_OP(i[0])
-		print("data:", hex(toLongDec(i[1:3])))
+		print("data:", hex(toLongHex(i[1:3])))
 		print("\n*************************\n")
 	return
 #excecutes the command and returns the angle read
@@ -266,8 +266,31 @@ def excecute_angle(command, key):
 		print("checksum error")
 		return
 	i = toHex(i)
+	print("data:", hex(toLongHex(i[1:3])))
 	angle = convertToAngle(toLongHex(i[1:3]))
+	print("angle:", angle)
+	print("signed angle:", round((twosCompMag(toLongHex(i[1:3])) / 2**14)*90, 2))
 	return angle  
+
+def twosCompMag(num):
+	positive = sign(num)
+	if positive:
+		return int(num,16)
+	return twoshextoDec(num)
+  
+def sign(num):
+	bins = bin(int(num, 16))[2:]
+	if bins[0]=='0' or len(bins)<16:
+		return True
+	return False
+
+def twoshextoDec(hex):
+	dec = int(hex, 16)
+	bins = bin(dec)[2:]
+	ones = ''.join('1' if bit == '0' else '0' for bit in bins)
+	twos = int(ones,2)+1
+	return twos
+
 ##main
 try: 	
 	read_start_up()
