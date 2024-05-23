@@ -257,7 +257,8 @@ def excecute_command(command, key):
 #excecutes the command and returns the angle read
 #arg : read angle command. allowed commands are ANG_X, ANG_Y, ANG_Z
 def excecute_angle(command, key):
-	if  (key == ANG_X or key == ANG_Y or key == ANG_Z):
+	angle = 0
+	if  (key == 'ANG_X' or key == 'ANG_Y' or key == 'ANG_Z'):
 		write(command)
 		i = frame(command)
 		if hex(i[3])!=calculate_crc(i):
