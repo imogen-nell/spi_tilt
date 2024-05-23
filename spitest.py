@@ -257,18 +257,29 @@ def excecute_command(command, key):
 #excecutes the command and returns the angle read
 #arg : read angle command. allowed commands are ANG_X, ANG_Y, ANG_Z
 def excecute_angle(command, key):
-	angle = 0
-	if  (key == 'ANG_X' or key == 'ANG_Y' or key == 'ANG_Z'):
-		write(command)
-		i = frame(command)
-		if hex(i[3])!=calculate_crc(i):
-			print("checksum error")
-			return
-		else:
-			angle = convertToAngle(toLongHex(i[1:3]))
-			i = toHex(i)
-	else:
-		print("invalid command")
+	write(command)
+	i = frame(command)
+	if hex(i[3])!=calculate_crc(i):
+		print("checksum error")
+		return
+	elif 'ANG' in key:
+		i = toHex(i)
+		print("\n*************************\n")
+		angle = convertToAngle(toLongHex(i[1:3]))
+		print("\n*************************\n")
+	# angle = 0
+	# i = 0
+	# if  (key == 'ANG_X' or key == 'ANG_Y' or key == 'ANG_Z'):
+	# 	write(command)
+	# 	i = frame(command)
+	# 	if hex(i[3])!=calculate_crc(i):
+	# 		print("checksum error")
+	# 		return
+	# 	else:
+	# 		angle = convertToAngle(toLongHex(i[1:3]))
+	# 		i = toHex(i)
+	# else:
+	# 	print("invalid command")
 	return angle  
 ##main
 try: 	
@@ -277,7 +288,8 @@ try:
 	write(WHOAMI)
 	while True:
 		excecute_command(ANG_X, 'ANG_X')
-		print("x:" , excecute_angle(ANG_X, 'ANG_X'))
+		ang = excecute_angle(ANG_X, 'ANG_X')
+		print("x:" , ang)
 		# print("y:" , excecute_angle(ANG_Y, 'ANG_Y'))
 		# print("z:" , excecute_angle(ANG_Z, 'ANG_Z'))
 		time.sleep(1)
